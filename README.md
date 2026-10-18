@@ -79,7 +79,7 @@ next run picks up where it left.
 Only the folders you choose, and only the kinds of file you tick:
 
 - **Documents**: txt, md, html, docx and odt, in pieces of about a page
-- **PDFs**: page by page, up to 5,000 pages a file (scanned PDFs without a text layer come in a later beta)
+- **PDFs**: PDF support coming in next release
 - **Photos**: JPEG, PNG, WebP, HEIC and BMP, by what they show
 - **Screenshots**: from your Screenshots folder, by what they show, with more detail than photos
 
