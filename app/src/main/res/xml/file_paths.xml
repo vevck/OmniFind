@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared storage, so results can be opened in (and shared with) other apps. Read-only grants, one file at a time. -->
+<paths>
+    <external-path name="storage" path="." />
+    <!-- SD cards (/storage/XXXX-XXXX): external-path covers only the phone's own storage. -->
+    <root-path name="volumes" path="storage" />
+</paths>

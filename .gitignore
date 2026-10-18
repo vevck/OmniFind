@@ -1,0 +1,45 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.cxx/
+.externalNativeBuild/
+captures/
+.DS_Store
+# The model files (865 MB): downloaded, never committed
+models/
+*.gguf
+
+# Release signing key and its passwords: back these up somewhere safe, never commit them
+signing/
+# Beta builds
+dist/
+
+# Planning guide: kept locally, not published
+docs/OmniFind-Android-Guide.md
+
+# Developer notes: kept locally, not published
+docs/DEVELOPMENT.md
+
+# Kotlin compiler's local caches and logs
+.kotlin/
+
+# Signing keys and their passwords, wherever they end up (the beta key lives in signing/, above)
+*.jks
+*.keystore
+keystore.properties
+*.p12
+*.pem
+
+# Built apps: published as releases, never committed (Android Studio's "Generate Signed APK" writes to app/release/)
+*.apk
+*.aab
+*.idsig
+app/release/
+
+# Heap dumps, logs, editor and Python caches
+*.hprof
+*.log
+.vscode/
+__pycache__/
