@@ -22,14 +22,13 @@ your own words, and it finds the match, whatever kind of file it is.
 
 ## What you can find
 
-- "the clause about pets in the lease" finds the page of the PDF and opens it there
 - "a dog on the beach" finds the photo, and "screenshot of a payment error" the screenshot
 - "notes from the trip to Goa" finds the note, even if it never uses those words
-- a search in English can find a note written in Bengali, Arabic or any of the model's 100+ languages, and the other
+- a search in English can find a note written in Kannada, Telugu or any of the model's 100+ languages, and the other
   way around
-- "invoice INV-2026-0417" finds the invoice by its exact number
+- "japan taxi receipt #212-2321-42" finds the receipt by its exact number
 
-Exact words count too. Invoice numbers, codes and names are matched as written, in file names, folder names and
+Exact words count too. Invoice or receipt numbers, codes and names are matched as written, in file names, folder names and
 document text, so a search gets both the meaning and the exact string. Every file is searchable by its words within
 seconds of being read, before its meaning is in.
 
