@@ -96,6 +96,43 @@ object OmniIcons {
     /** The checkbox tick: heavier than the other icons, as in the mockup. */
     val Check = icon("check", { moveTo(5.5f, 12.5f); lineTo(10f, 17f); lineTo(18.5f, 7.5f) }, weight = 3.2f)
 
+    /** The menu button: three dots, one above another. */
+    val Kebab = icon("kebab", fills = listOf({ circle(12f, 5.5f, 1.9f) }, { circle(12f, 12f, 1.9f) }, { circle(12f, 18.5f, 1.9f) }))
+
+    /** Settings: two sliders. */
+    val Sliders = icon("sliders",
+        { moveTo(3.5f, 8f); lineTo(6.5f, 8f); moveTo(11.5f, 8f); lineTo(20.5f, 8f) },
+        { circle(9f, 8f, 2.4f) },
+        { moveTo(3.5f, 16f); lineTo(12.5f, 16f); moveTo(17.5f, 16f); lineTo(20.5f, 16f) },
+        { circle(15f, 16f, 2.4f) },
+    )
+
+    /** Dashboard: four tiles. */
+    val Grid = icon("grid",
+        { roundRect(4f, 4f, 6.5f, 6.5f, 1.5f) }, { roundRect(13.5f, 4f, 6.5f, 6.5f, 1.5f) },
+        { roundRect(4f, 13.5f, 6.5f, 6.5f, 1.5f) }, { roundRect(13.5f, 13.5f, 6.5f, 6.5f, 1.5f) },
+    )
+
+    /** Help: a question mark in a circle. */
+    val Help = icon("help",
+        { circle(12f, 12f, 9f) },
+        { moveTo(9.6f, 9.4f); arcTo(2.5f, 2.5f, 0f, true, true, 13f, 11.8f); quadTo(12f, 12.4f, 12f, 13.8f) },
+        fills = listOf({ circle(12f, 17f, 1.15f) }),
+    )
+
+    /** A guide article: a page with lines of text. */
+    val Article = icon("article",
+        {
+            moveTo(7f, 3f); lineTo(14f, 3f); lineTo(19f, 8f); lineTo(19f, 19.5f); arcTo(1.5f, 1.5f, 0f, false, true, 17.5f, 21f)
+            lineTo(6.5f, 21f); arcTo(1.5f, 1.5f, 0f, false, true, 5f, 19.5f); lineTo(5f, 4.5f); arcTo(1.5f, 1.5f, 0f, false, true, 6.5f, 3f)
+            close()
+        },
+        { moveTo(14f, 3f); lineTo(14f, 8f); lineTo(19f, 8f) },
+        { moveTo(8.5f, 12.5f); lineTo(15.5f, 12.5f); moveTo(8.5f, 16f); lineTo(15.5f, 16f) },
+    )
+
+    val ChevronRight = icon("chevron-right", { moveTo(9f, 5f); lineTo(16f, 12f); lineTo(9f, 19f) })
+
     /** Refresh: a circular arrow. */
     val Refresh = icon("refresh", {
         moveTo(19f, 12f); arcTo(7f, 7f, 0f, true, true, 16.95f, 7.05f)

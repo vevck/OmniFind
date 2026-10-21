@@ -33,6 +33,8 @@ import com.omnifind.app.ui.PdfPageScreen
 import com.omnifind.app.ui.SearchScreen
 import com.omnifind.app.ui.SearchViewModel
 import com.omnifind.app.ui.Tab
+import com.omnifind.app.ui.help.HelpHost
+import com.omnifind.app.ui.help.HelpRoutes
 import com.omnifind.app.ui.theme.OmniTheme
 import java.io.File
 
@@ -98,7 +100,14 @@ class MainActivity : ComponentActivity() {
                     PdfPageScreen(File(open.first), open.second, onClose = { pdf = null })
                     return@OmniTheme
                 }
-                AppFrame(tab, { tab = it }) {
+                // The ⋮ menu, and the pages it leads to (Help, Settings, Dashboard) as a back stack over the tabs.
+                var menuOpen by rememberSaveable { mutableStateOf(false) }
+                var pages by rememberSaveable { mutableStateOf(listOf<String>()) }
+                if (pages.isNotEmpty()) {
+                    HelpHost(pages) { pages = it }
+                    return@OmniTheme
+                }
+                AppFrame(tab, { tab = it }, menuOpen, { menuOpen = it }, { pages = listOf(HelpRoutes.of(it)) }) {
                     when (tab) {
                         Tab.SEARCH -> SearchScreen(search) { hit -> openHit(hit) { pdf = it } }
                         Tab.INDEX -> IndexScreen(index, ::askForFileAccess)

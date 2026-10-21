@@ -1,6 +1,13 @@
 package com.omnifind.app
 
 import android.app.Application
+import android.graphics.BitmapFactory
+import androidx.compose.ui.graphics.asImageBitmap
+import com.omnifind.app.help.Guide
+import com.omnifind.app.help.ReleaseNotes
+import com.omnifind.app.ui.help.HelpPages
+import com.omnifind.app.ui.help.HelpScreen
+import com.omnifind.app.ui.help.HelpTab
 import androidx.compose.runtime.Composable
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.omnifind.app.index.FileKind
@@ -22,6 +29,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import java.io.File
 import java.util.Calendar
 
 /**
@@ -56,6 +64,34 @@ class ScreenshotTest {
 
     @Test
     fun engine() = shot("engine", Tab.ENGINE) { EngineContent(EngineUi(), NoEngineActions) }
+
+    @Test
+    fun searchMenuOpen() = captureRoboImage("build/screens/search-menu-open.png") {
+        OmniTheme { AppFrame(Tab.SEARCH, {}, menuOpen = true) { SearchContent(SearchUi(), {}, {}, {}) } }
+    }
+
+    private val guide = Guide.parse(File("src/main/assets/help/guide.json").readText())
+    private val notes = ReleaseNotes.parse(File("src/main/assets/help/release_notes.json").readText())
+    private val figure = { name: String ->
+        BitmapFactory.decodeFile("src/main/assets/help/figures/$name.webp")?.asImageBitmap()
+    }
+
+    private fun help(name: String, vararg stack: String, tab: HelpTab? = null) =
+        captureRoboImage("build/screens/$name.png") {
+            OmniTheme {
+                if (tab == null) HelpPages(stack.toList(), {}, guide, notes, figure)
+                else HelpScreen(guide, notes, tab, {}, "", {}, {}, {}, {})
+            }
+        }
+
+    @Test
+    fun helpGuide() = help("help-guide", "help")
+
+    @Test
+    fun helpReleaseNotes() = help("help-release-notes", tab = HelpTab.NOTES)
+
+    @Test
+    fun helpArticle() = help("help-article", "help", "article/indexing-your-files")
 
     private object NoIndexActions : IndexActions {
         override fun askPermission() {}
