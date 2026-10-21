@@ -24,9 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.omnifind.app.index.FileKind
+import com.omnifind.app.index.FolderPolicy
+import com.omnifind.app.ui.theme.OmniIcons
+import com.omnifind.app.ui.theme.SmallAction
 import com.omnifind.app.index.IndexStore
 import com.omnifind.app.ui.theme.CheckRow
 import com.omnifind.app.ui.theme.OmniCard
@@ -41,7 +45,6 @@ import com.omnifind.app.ui.theme.SectionLabel
 import com.omnifind.app.ui.theme.Segmented
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 /** What the index screen shows. */
 data class IndexUi(
@@ -60,8 +63,12 @@ data class IndexUi(
     val caution: String? = null,
 )
 
-data class VolumeUi(val label: String, val removable: Boolean, val folders: List<FolderUi>)
-data class FolderUi(val name: String, val path: String, val wholeVolume: Boolean, val chosen: Boolean)
+data class VolumeUi(
+    val label: String, val removable: Boolean, val folders: List<FolderUi>,
+    /** What the last Refresh found ("2 new folders: Scans, Tickets"). */
+    val refreshNote: String? = null,
+)
+data class FolderUi(val name: String, val path: String, val wholeVolume: Boolean, val chosen: Boolean, val isNew: Boolean = false)
 
 /** What the index screen can ask for. */
 interface IndexActions {
@@ -71,6 +78,7 @@ interface IndexActions {
     fun stop()
     fun toggle(type: IndexType)
     fun toggleFolder(path: String)
+    fun refreshVolume(label: String) {}
     fun choosePhotoBudget(budget: Int)
     fun chooseScreenshotBudget(budget: Int)
     fun chooseThreads(count: Int)
@@ -88,8 +96,8 @@ fun IndexScreen(model: IndexViewModel, onAskPermission: () -> Unit) {
         embedWhileCharging = model.embedWhileCharging, threads = model.threads,
         volumes = model.choices.map { (volume, choices) ->
             VolumeUi(volume.label, volume.removable, choices.map {
-                FolderUi(it.folder.name, it.path, it.isWholeVolume, it.path in model.folders)
-            })
+                FolderUi(it.folder.name, it.path, it.isWholeVolume, it.path in model.folders, it.path in model.newFolders)
+            }, model.refreshNotes[volume.label])
         },
         missing = model.missing, caution = model.caution,
     )
@@ -100,6 +108,7 @@ fun IndexScreen(model: IndexViewModel, onAskPermission: () -> Unit) {
         override fun stop() = model.stop()
         override fun toggle(type: IndexType) = model.toggle(type)
         override fun toggleFolder(path: String) = model.toggleFolder(path)
+        override fun refreshVolume(label: String) = model.refreshVolume(label)
         override fun choosePhotoBudget(budget: Int) = model.choosePhotoBudget(budget)
         override fun chooseScreenshotBudget(budget: Int) = model.chooseScreenshotBudget(budget)
         override fun chooseThreads(count: Int) = model.chooseThreads(count)
@@ -151,7 +160,8 @@ fun IndexContent(state: IndexUi, actions: IndexActions) {
         if (state.lastRun != null) {
             Spacer(Modifier.height(16.dp))
             OmniCard(padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)) {
-                val at = state.lastRunAt?.let { SimpleDateFormat("d MMM, HH:mm", Locale.getDefault()).format(Date(it)) }
+                val locale = LocalConfiguration.current.locales[0]   // follows a change of language while open
+                val at = state.lastRunAt?.let { SimpleDateFormat("d MMM, HH:mm", locale).format(Date(it)) }
                 SectionLabel(listOfNotNull("Last run", at).joinToString(" · "))
                 Spacer(Modifier.height(3.5.dp))
                 Text(state.lastRun, style = OmniType.LastRun)
@@ -203,35 +213,7 @@ fun IndexContent(state: IndexUi, actions: IndexActions) {
         }
 
         Spacer(Modifier.height(24.dp))
-        SectionLabel("Folders to search")
-        for (volume in state.volumes) {
-            Spacer(Modifier.height(13.dp))
-            Text(volume.label, style = OmniType.RowTitle.copy(color = OmniColors.Muted))
-            Spacer(Modifier.height(8.dp))
-            RowsCard(rows = volume.folders.map { folder ->
-                {
-                    CheckRow(
-                        if (folder.wholeVolume) "Everything on the ${volume.label.replaceFirstChar { it.lowercase() }}" else folder.name,
-                        null, folder.chosen, onToggle = { actions.toggleFolder(folder.path) }, minHeight = 52.dp,
-                    )
-                }
-            })
-        }
-        if (state.volumes.none { it.removable }) {
-            Spacer(Modifier.height(10.dp))
-            Text("No SD card found. Insert one (set up as portable storage) and come back to this tab.",
-                style = OmniType.RowSubtitle)
-        }
-        if (state.missing.isNotEmpty()) {
-            Spacer(Modifier.height(10.dp))
-            RowsCard(rows = state.missing.map { path ->
-                { CheckRow(path, "Not there now; its files stay searchable until it's back", true,
-                    onToggle = { actions.toggleFolder(path) }) }
-            })
-        }
-        Spacer(Modifier.height(10.dp))
-        Text("Changes apply on the next “Index now”. Folders you untick leave the index; types you untick stay " +
-            "searchable.", style = OmniType.RowSubtitle)
+        FoldersSection(state, actions)
         Spacer(Modifier.height(28.dp))
     }
 }
@@ -262,7 +244,7 @@ private fun Hero(state: IndexUi) {
         val left = stats?.let { hoursLeft(it, state) } ?: 0.0
         if (left > 0.05) {
             Spacer(Modifier.height(10.dp))
-            Text("About %.1f hours of embedding left".format(Locale.getDefault(), left), style = OmniType.Caption)
+            Text("About %.1f hours of embedding left".format(LocalConfiguration.current.locales[0], left), style = OmniType.Caption)
         }
     }
 }
@@ -278,10 +260,10 @@ private fun hoursLeft(stats: IndexStore.Stats, state: IndexUi): Double =
 
 @Composable
 private fun BudgetRow(label: String, options: List<Int>, selected: Int, choose: (Int) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, style = OmniType.RowTitle, modifier = Modifier.weight(1f))
-        Segmented(options, selected, { if (it == options.first()) "Standard" else "Detailed" }, choose,
-            modifier = Modifier.width(200.dp), height = 40.dp)
+    Column {
+        Text(label, style = OmniType.RowTitle)
+        Spacer(Modifier.height(8.dp))
+        Segmented(options, selected, { if (it == options.first()) "Standard" else "Detailed" }, choose, height = 40.dp)
     }
 }
 
@@ -305,4 +287,50 @@ private fun CautionDialog(kinds: String, actions: IndexActions) {
             Text("Cancel", style = OmniType.ButtonSmall.copy(color = OmniColors.Muted))
         } },
     )
+}
+
+/** "Folders to search": each storage with its Refresh, its folders (new ones marked), and what's protected. */
+@Composable
+fun FoldersSection(state: IndexUi, actions: IndexActions) {
+    Column {
+        SectionLabel("Folders to search")
+        for (volume in state.volumes) {
+            Spacer(Modifier.height(9.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(volume.label, style = OmniType.RowTitle.copy(color = OmniColors.Muted), modifier = Modifier.weight(1f))
+                SmallAction("Refresh", OmniIcons.Refresh, { actions.refreshVolume(volume.label) })
+            }
+            volume.refreshNote?.let {
+                Text(it, style = OmniType.RowSubtitle.copy(color = OmniColors.Primary, fontWeight = FontWeight(600)))
+                Spacer(Modifier.height(4.dp))
+            }
+            Spacer(Modifier.height(4.dp))
+            RowsCard(rows = volume.folders.map { folder ->
+                {
+                    CheckRow(
+                        if (folder.wholeVolume) "Everything on the ${volume.label.let { if (it.startsWith("SD")) it else it.replaceFirstChar(Char::lowercase) }}" else folder.name,
+                        null, folder.chosen, onToggle = { actions.toggleFolder(folder.path) }, minHeight = 52.dp,
+                        badge = if (folder.isNew) "New" else null,
+                    )
+                }
+            })
+        }
+        Spacer(Modifier.height(10.dp))
+        Text(FolderPolicy.EXPLANATION, style = OmniType.RowSubtitle)
+        if (state.volumes.none { it.removable }) {
+            Spacer(Modifier.height(10.dp))
+            Text("No SD card found. Insert one (set up as portable storage) and come back to this tab.",
+                style = OmniType.RowSubtitle)
+        }
+        if (state.missing.isNotEmpty()) {
+            Spacer(Modifier.height(10.dp))
+            RowsCard(rows = state.missing.map { path ->
+                { CheckRow(path, "Not there now; its files stay searchable until it's back", true,
+                    onToggle = { actions.toggleFolder(path) }) }
+            })
+        }
+        Spacer(Modifier.height(10.dp))
+        Text("Changes apply on the next “Index now”. Folders you untick leave the index; types you untick stay " +
+            "searchable.", style = OmniType.RowSubtitle)
+    }
 }

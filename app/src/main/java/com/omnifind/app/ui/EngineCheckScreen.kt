@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,8 @@ import com.omnifind.app.ui.theme.OmniColors
 import com.omnifind.app.ui.theme.OmniSpace
 import com.omnifind.app.ui.theme.OmniType
 import com.omnifind.app.ui.theme.PillButton
+import com.omnifind.app.ui.theme.OmniIcons
+import com.omnifind.app.ui.theme.SmallAction
 import com.omnifind.app.ui.theme.ProgressLine
 import com.omnifind.app.ui.theme.RowsCard
 import com.omnifind.app.ui.theme.ScreenTitle
@@ -65,10 +68,11 @@ interface EngineActions {
     fun benchmark()
     fun download() {}
     fun stopDownload() {}
+    fun tour() {}
 }
 
 @Composable
-fun EngineCheckScreen(model: EngineCheckViewModel) {
+fun EngineCheckScreen(model: EngineCheckViewModel, onTour: () -> Unit = {}) {
     val models = model.models
     EngineContent(
         EngineUi(models != null, models?.media != null, model.folder.path, model.busy, model.results, model.threads, model.log,
@@ -81,6 +85,7 @@ fun EngineCheckScreen(model: EngineCheckViewModel) {
             override fun benchmark() = model.benchmark()
             override fun download() = model.startDownload()
             override fun stopDownload() { model.stopDownload() }
+            override fun tour() = onTour()
         },
     )
 }
@@ -110,7 +115,7 @@ fun EngineContent(state: EngineUi, actions: EngineActions) {
             }
             if (state.textModel) {
                 Spacer(Modifier.height(14.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Tag("Text")
                     if (state.mediaModel) { Tag("Images"); Tag("Audio") }
                 }
@@ -174,6 +179,9 @@ fun EngineContent(state: EngineUi, actions: EngineActions) {
             actions.chooseThreads(count)
             if (state.mediaModel && state.busy == null) actions.benchmark()
         })
+
+        Spacer(Modifier.height(10.dp))
+        SmallAction("What's new in this build", OmniIcons.Chip, actions::tour)
 
         state.busy?.let {
             Spacer(Modifier.height(12.dp))

@@ -7,7 +7,11 @@ import android.os.ParcelFileDescriptor
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -60,17 +65,19 @@ fun PdfPageScreen(file: File, startPage: Int, onClose: () -> Unit) {
     var page by remember { mutableIntStateOf((startPage - 1).coerceAtLeast(0)) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
+    // The window's width in pixels, kept current through rotation and window resizing (foldables, tablets).
+    val widthPx = LocalWindowInfo.current.containerSize.width
     if (renderer != null) {
         page = page.coerceIn(0, renderer.pageCount - 1)
-        LaunchedEffect(page) {
+        LaunchedEffect(page, widthPx) {
             bitmap = null
             bitmap = withContext(Dispatchers.IO) {
-                lock.withLock { render(renderer, page, context.resources.displayMetrics.widthPixels) }
+                lock.withLock { render(renderer, page, widthPx) }
             }
         }
     }
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().background(com.omnifind.app.ui.theme.OmniColors.Background).windowInsetsPadding(WindowInsets.safeDrawing)) {
         Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = onClose) { Text("Back") }
             Text(file.name, style = MaterialTheme.typography.titleSmall, maxLines = 1,

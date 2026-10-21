@@ -18,6 +18,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -45,6 +55,23 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+
+/**
+ * A label that shrinks to fit (down to 70%) instead of being cut off: buttons and chips on a 320 dp screen (ldpi), or
+ * at a large font size. Past that it wraps to a second line rather than losing words.
+ */
+@Composable
+fun FitText(
+    text: String, style: TextStyle, modifier: Modifier = Modifier, textAlign: TextAlign = TextAlign.Center,
+    maxLines: Int = 2,
+) {
+    val max = style.fontSize
+    BasicText(
+        text, modifier, style = style.copy(textAlign = textAlign), maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
+        autoSize = TextAutoSize.StepBased(minFontSize = max * 0.7f, maxFontSize = max, stepSize = 0.25.sp),
+    )
+}
 
 /** Spacing from the mockups: 20 dp screen margins and card padding. */
 object OmniSpace {
@@ -100,18 +127,16 @@ fun PillButton(
     textStyle: TextStyle = OmniType.Button,
 ) {
     val shape = CircleShape
-    val base = modifier.height(height).clip(shape)
+    val base = modifier.heightIn(min = height).clip(shape)
     val styled = if (filled) base.background(if (enabled) OmniColors.Primary else OmniColors.Primary.copy(alpha = 0.4f))
     else base.background(OmniColors.Surface).border(BorderStroke(2.dp, OmniColors.Primary.copy(alpha = if (enabled) 1f else 0.4f)), shape)
     Box(
-        styled.clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 16.dp),
+        styled.clickable(enabled = enabled, role = Role.Button, onClick = onClick).padding(horizontal = 16.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
+        FitText(
             text,
-            style = textStyle.copy(color = if (filled) OmniColors.Surface else OmniColors.Primary.copy(alpha = if (enabled) 1f else 0.4f)),
-            maxLines = 1,
-            textAlign = TextAlign.Center,
+            textStyle.copy(color = if (filled) OmniColors.Surface else OmniColors.Primary.copy(alpha = if (enabled) 1f else 0.4f)),
         )
     }
 }
@@ -121,7 +146,7 @@ fun PillButton(
 fun FilterPill(text: String, selected: Boolean, onClick: () -> Unit) {
     val shape = CircleShape
     Box(
-        Modifier.height(40.dp).clip(shape)
+        Modifier.heightIn(min = 40.dp).clip(shape)
             .background(if (selected) OmniColors.Primary else OmniColors.Surface)
             .then(if (selected) Modifier else Modifier.border(1.dp, OmniColors.Border, shape))
             .clickable(role = Role.Tab, onClick = onClick)
@@ -137,9 +162,9 @@ fun FilterPill(text: String, selected: Boolean, onClick: () -> Unit) {
 @Composable
 fun Tag(text: String) {
     Box(
-        Modifier.height(28.dp).clip(CircleShape).background(OmniColors.PrimarySoft).padding(horizontal = 12.dp),
+        Modifier.heightIn(min = 28.dp).clip(CircleShape).background(OmniColors.PrimarySoft).padding(horizontal = 12.dp, vertical = 3.dp),
         contentAlignment = Alignment.Center,
-    ) { Text(text, style = OmniType.Tag) }
+    ) { Text(text, style = OmniType.Tag, maxLines = 1, softWrap = false) }
 }
 
 /** The search field: white, a leading search icon, blue outline while focused (with a soft glow). */
@@ -165,16 +190,17 @@ fun SearchField(
         interactionSource = interaction,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { onSearch() }),
-        modifier = modifier.fillMaxWidth().height(height)
+        modifier = modifier.fillMaxWidth().heightIn(min = height)
             .then(if (active) Modifier.shadow(10.dp, FieldShape, ambientColor = OmniColors.Primary, spotColor = OmniColors.Primary.copy(alpha = 0.35f)) else Modifier)
             .clip(FieldShape).background(OmniColors.Surface)
             .border(if (active) 2.dp else 1.5.dp, if (active) OmniColors.Primary else OmniColors.Border, FieldShape),
         decorationBox = { inner ->
-            Row(Modifier.fillMaxHeight().padding(horizontal = 18.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.heightIn(min = height).padding(horizontal = 18.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icon(OmniIcons.Search, null, tint = if (active) OmniColors.Primary else OmniColors.Muted, modifier = Modifier.size(22.dp))
                 Spacer(Modifier.width(14.dp))
                 Box(Modifier.weight(1f)) {
-                    if (value.isEmpty()) Text(placeholder, style = OmniType.Field.copy(color = OmniColors.Placeholder), maxLines = 1)
+                    if (value.isEmpty()) FitText(placeholder, OmniType.Field.copy(color = OmniColors.Placeholder),
+                        textAlign = TextAlign.Start, maxLines = 1)
                     inner()
                 }
             }
@@ -198,7 +224,10 @@ fun OmniCheckbox(checked: Boolean, modifier: Modifier = Modifier) {
 
 /** A row with a checkbox, a title and an optional subtitle; the whole row toggles. */
 @Composable
-fun CheckRow(title: String, subtitle: String?, checked: Boolean, onToggle: () -> Unit, minHeight: Dp = 60.dp) {
+fun CheckRow(
+    title: String, subtitle: String?, checked: Boolean, onToggle: () -> Unit, minHeight: Dp = 60.dp,
+    badge: String? = null,
+) {
     Row(
         Modifier.fillMaxWidth().heightIn(min = minHeight).clickable(role = Role.Checkbox, onClick = onToggle)
             .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -207,8 +236,12 @@ fun CheckRow(title: String, subtitle: String?, checked: Boolean, onToggle: () ->
         OmniCheckbox(checked)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically)) {
-            Text(title, style = OmniType.RowTitle, maxLines = 1)
+            Text(title, style = OmniType.RowTitle, maxLines = 2)
             if (subtitle != null) Text(subtitle, style = OmniType.RowSubtitle, maxLines = 2)
+        }
+        if (badge != null) {
+            Spacer(Modifier.width(8.dp))
+            Tag(badge)
         }
     }
 }
@@ -217,7 +250,7 @@ fun CheckRow(title: String, subtitle: String?, checked: Boolean, onToggle: () ->
 @Composable
 fun <T> Segmented(options: List<T>, selected: T, label: (T) -> String, onSelect: (T) -> Unit, modifier: Modifier = Modifier, height: Dp = 52.dp) {
     Row(
-        modifier.fillMaxWidth().height(height).clip(RoundedCornerShape(15.dp)).background(OmniColors.Track).padding(4.dp),
+        modifier.fillMaxWidth().heightIn(min = height).height(IntrinsicSize.Min).clip(RoundedCornerShape(15.dp)).background(OmniColors.Track).padding(4.dp),
     ) {
         for (option in options) {
             val chosen = option == selected
@@ -227,12 +260,26 @@ fun <T> Segmented(options: List<T>, selected: T, label: (T) -> String, onSelect:
                     .clickable(role = Role.RadioButton) { onSelect(option) },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(label(option), style = OmniType.Field.copy(
+                FitText(label(option), OmniType.Field.copy(
                     color = if (chosen) OmniColors.Surface else OmniColors.Ink,
                     fontWeight = androidx.compose.ui.text.font.FontWeight(if (chosen) 700 else 400),
-                ))
+                ), Modifier.padding(horizontal = 6.dp, vertical = 8.dp))
             }
         }
+    }
+}
+
+/** A small text button with an icon (Refresh), in the brand blue. */
+@Composable
+fun SmallAction(text: String, icon: ImageVector, onClick: () -> Unit, enabled: Boolean = true) {
+    Row(
+        Modifier.clip(CircleShape).clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .heightIn(min = 40.dp).padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(icon, null, tint = OmniColors.Primary.copy(alpha = if (enabled) 1f else 0.4f), modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(6.dp))
+        Text(text, style = OmniType.ButtonSmall.copy(color = OmniColors.Primary.copy(alpha = if (enabled) 1f else 0.4f)))
     }
 }
 
@@ -242,15 +289,16 @@ data class TabItem(val label: String, val icon: ImageVector)
 /** The bottom bar: white, a hairline on top, the chosen tab's icon on a soft blue pill and its label in blue. */
 @Composable
 fun BottomBar(items: List<TabItem>, selected: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxWidth().background(OmniColors.Surface)) {
+    Column(modifier.fillMaxWidth().background(OmniColors.Surface).windowInsetsPadding(WindowInsets.navigationBars)) {
         Box(Modifier.fillMaxWidth().height(1.dp).background(OmniColors.Track))
-        Row(Modifier.fillMaxWidth().height(83.dp)) {
+        // On a tablet the tabs stay together in the middle rather than spreading across the screen.
+        Row(Modifier.fillMaxWidth().wrapContentWidth().widthIn(max = 600.dp).heightIn(min = 83.dp).height(IntrinsicSize.Min)) {
             items.forEachIndexed { index, item ->
                 val chosen = index == selected
                 Column(
                     Modifier.weight(1f).fillMaxHeight()
                         .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, role = Role.Tab) { onSelect(index) }
-                        .padding(top = 10.dp),
+                        .padding(top = 10.dp, bottom = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Box(
@@ -293,14 +341,14 @@ fun ProgressLine(fraction: Float, modifier: Modifier = Modifier, track: Color = 
 @Composable
 fun IconRow(icon: ImageVector, text: String, onClick: (() -> Unit)? = null, trailing: @Composable RowScope.() -> Unit = {}) {
     Row(
-        Modifier.fillMaxWidth().height(55.dp)
+        Modifier.fillMaxWidth().heightIn(min = 55.dp)
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-            .padding(horizontal = 18.dp),
+            .padding(horizontal = 18.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(icon, null, tint = OmniColors.Primary, modifier = Modifier.size(22.dp))
         Spacer(Modifier.width(10.dp))
-        Text(text, style = OmniType.RowText, modifier = Modifier.weight(1f), maxLines = 1)
+        Text(text, style = OmniType.RowText, modifier = Modifier.weight(1f), maxLines = 2)
         trailing()
     }
 }

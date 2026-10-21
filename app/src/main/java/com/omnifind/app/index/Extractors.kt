@@ -49,7 +49,7 @@ object Extractors {
             Charsets.UTF_8.newDecoder()
                 .onMalformedInput(CodingErrorAction.REPORT)
                 .onUnmappableCharacter(CodingErrorAction.REPORT)
-                .decode(java.nio.ByteBuffer.wrap(bytes)).toString().removePrefix("﻿")
+                .decode(java.nio.ByteBuffer.wrap(bytes)).toString().removePrefix("\uFEFF")   // a byte-order mark at the start
         } catch (_: CharacterCodingException) {
             String(bytes, charset("windows-1252"))
         }

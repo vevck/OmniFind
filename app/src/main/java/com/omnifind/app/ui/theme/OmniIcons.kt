@@ -96,5 +96,10 @@ object OmniIcons {
     /** The checkbox tick: heavier than the other icons, as in the mockup. */
     val Check = icon("check", { moveTo(5.5f, 12.5f); lineTo(10f, 17f); lineTo(18.5f, 7.5f) }, weight = 3.2f)
 
+    /** Refresh: a circular arrow. */
+    val Refresh = icon("refresh", {
+        moveTo(19f, 12f); arcTo(7f, 7f, 0f, true, true, 16.95f, 7.05f)
+    }, { moveTo(17.5f, 3.5f); lineTo(17.5f, 7.5f); lineTo(13.5f, 7.5f) })
+
     val Back = icon("back", { moveTo(15f, 5f); lineTo(8f, 12f); lineTo(15f, 19f) })
 }

@@ -16,10 +16,18 @@ class IndexSettings(private val context: Context) {
     }
 
     /** The choices on each mounted volume: the whole volume, then its top-level folders (hidden and Android/ out). */
-    fun choices(): Map<Volume, List<Choice>> = Volumes.list(context).associateWith { volume ->
-        val folders = volume.root.listFiles { file -> file.isDirectory && !Rules.skipsFolder(file) }
-            ?.sortedBy { it.name.lowercase() } ?: emptyList()
-        listOf(Choice(volume, volume.root)) + folders.map { Choice(volume, it) }
+    fun choices(): Map<Volume, List<Choice>> = Volumes.list(context).associateWith(::choices)
+
+    /**
+     * One volume's choices, read from the disk now (so folders made since show up): its readable top-level folders,
+     * without system, hidden or linked ones ([FolderPolicy]).
+     */
+    fun choices(volume: Volume): List<Choice> {
+        val folders = volume.root.listFiles { file ->
+            file.isDirectory && !FolderPolicy.isProtectedName(file) && !Rules.skipsFolder(file) &&
+                !FolderPolicy.isSymlink(file) && FolderPolicy.allows(file.path)
+        }?.sortedBy { it.name.lowercase() } ?: emptyList()
+        return listOf(Choice(volume, volume.root)) + folders.map { Choice(volume, it) }
     }
 
     /**
@@ -32,7 +40,8 @@ class IndexSettings(private val context: Context) {
                 .map { File(Environment.getExternalStorageDirectory(), it).path }.toSet()
         set(value) = prefs.edit().putStringSet(KEY_PATHS, value).remove(KEY_OLD_NAMES).apply()
 
-    val roots: List<File> get() = folders.map(::File)
+    /** The chosen folders that may be read: a saved path that's protected (or was tampered with) is dropped here. */
+    val roots: List<File> get() = FolderPolicy.sanitize(folders)
 
     /** CPU threads for embedding (and queries). The engine check's benchmark says which is fastest here. */
     var threads: Int

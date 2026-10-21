@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,6 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -94,7 +99,7 @@ fun SearchContent(
         Spacer(Modifier.height(24.dp))
         SearchField(state.query, onQuery, highlight = true)
         Spacer(Modifier.height(19.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             for (filter in SearchViewModel.Filter.entries) {
                 FilterPill(filter.label, state.filter == filter) { onFilter(filter) }
             }
@@ -123,8 +128,14 @@ fun SearchContent(
 
 @Composable
 private fun Welcome(onExample: (String) -> Unit) {
-    Column(Modifier.fillMaxSize()) {
-        Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+    // One scrolling column at least as tall as the screen: the privacy note sits at the bottom where there's room (as
+    // in the mockup) and simply follows the examples on short screens (ldpi, landscape, large text) instead of
+    // covering them.
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+      val screen = maxHeight
+      Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Column(Modifier.fillMaxWidth().heightIn(min = screen), verticalArrangement = Arrangement.SpaceBetween) {
+          Column {
             Spacer(Modifier.height(28.5.dp))
             Text("Find anything.", style = OmniType.Hero)
             Text("On your device.", style = OmniType.HeroSoft)
@@ -135,9 +146,13 @@ private fun Welcome(onExample: (String) -> Unit) {
             Spacer(Modifier.height(10.dp))
             RowsCard(rows = examples.map { (icon, text) -> { IconRow(icon, text, onClick = { onExample(text) }) } })
             Spacer(Modifier.height(20.dp))
+          }
+          Column {
+            Privacy()
+            Spacer(Modifier.height(20.dp))
+          }
         }
-        Privacy()
-        Spacer(Modifier.height(20.dp))
+      }
     }
 }
 
@@ -169,8 +184,9 @@ private fun Results(state: SearchUi, onOpen: (SearchHit) -> Unit) {
 
 /** A small, upright, cached thumbnail (Coil reads EXIF orientation and decodes HEIC through Android). */
 @Composable
-private fun Thumbnail(path: String, modifier: Modifier, pixels: Int) {
+private fun Thumbnail(path: String, modifier: Modifier, side: Dp) {
     val context = LocalContext.current
+    val pixels = with(LocalDensity.current) { side.roundToPx() }   // sharp on every density, ldpi to xxxhdpi
     AsyncImage(
         model = ImageRequest.Builder(context).data(File(path)).size(Size(pixels, pixels)).build(),
         contentDescription = null,
@@ -189,7 +205,7 @@ private fun Grid(hits: List<SearchHit>, onOpen: (SearchHit) -> Unit) {
     ) {
         items(hits, key = { it.path }) { hit ->
             Box(Modifier.aspectRatio(1f).clickable { onOpen(hit) }) {
-                Thumbnail(hit.path, Modifier.fillMaxSize(), pixels = 320)
+                Thumbnail(hit.path, Modifier.fillMaxSize(), side = 160.dp)
             }
         }
     }
@@ -205,7 +221,7 @@ private fun Result(hit: SearchHit, onClick: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         if (hit.kind.isPicture) {
-            Thumbnail(hit.path, Modifier.size(56.dp), pixels = 168)
+            Thumbnail(hit.path, Modifier.size(56.dp), side = 56.dp)
         } else {
             Box(Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(OmniColors.PrimarySoft),
                 contentAlignment = Alignment.Center) {

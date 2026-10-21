@@ -57,6 +57,12 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var lastRunAt by mutableStateOf(settings.lastRunAt)
         private set
+    /** Folders a Refresh found that weren't listed before, by path; and what each volume's last Refresh found. */
+    var newFolders by mutableStateOf(emptySet<String>())
+        private set
+    var refreshNotes by mutableStateOf(emptyMap<String, String>())
+        private set
+
     /** Shown before indexing when chosen types are already indexed: what's there, and that it will be skipped. */
     var caution by mutableStateOf<String?>(null)
         private set
@@ -96,6 +102,28 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun hasPermission() = com.omnifind.app.index.FileAccess.granted(app)
 
+    /**
+     * Lists [volumeLabel]'s folders again from the disk: folders made since (by you, a camera, an app) appear, marked
+     * New; ones that went away disappear. System and other apps' folders never appear (FolderPolicy).
+     */
+    fun refreshVolume(volumeLabel: String) {
+        val volume = choices.keys.firstOrNull { it.label == volumeLabel } ?: return
+        val before = choices[volume].orEmpty().map { it.path }.toSet()
+        viewModelScope.launch {
+            val now = withContext(Dispatchers.IO) { settings.choices(volume) }
+            val added = now.map { it.path }.filter { it !in before }
+            choices = choices + (volume to now)
+            newFolders = newFolders + added
+            refreshNotes = refreshNotes + (volumeLabel to when (added.size) {
+                0 -> "No new folders"
+                1 -> "1 new folder: ${File(added.first()).name}"
+                else -> "${added.size} new folders: ${added.take(3).joinToString { File(it).name }}" +
+                    if (added.size > 3) "…" else ""
+            })
+            missing = folders.filter { !File(it).isDirectory }.sorted()
+        }
+    }
+
     fun isChosen(type: IndexType) = type.kinds.all { it in kinds }
 
     fun toggle(type: IndexType) {
@@ -104,6 +132,8 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun toggleFolder(path: String) {
+        // Unticking always works; ticking only a folder the policy allows (the picker lists no others anyway).
+        if (path !in folders && !com.omnifind.app.index.FolderPolicy.allows(path)) return
         folders = if (path in folders) folders - path else folders + path
         settings.folders = folders
     }
@@ -140,7 +170,10 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         val indexed = alreadyIndexed()
         if (indexed.isNotEmpty() && settings.cautionBeforeIndexing) {
             pendingEmbedAnyway = embedAnyway
-            caution = indexed.joinToString(", ") { (type, count) -> "$count ${type.label.lowercase()}" }
+            // "7 documents, 4 PDFs, 8 pictures": lower case, but an acronym stays as it's written.
+            caution = indexed.joinToString(", ") { (type, count) ->
+                "$count ${if (type.label.count(Char::isUpperCase) > 1) type.label else type.label.lowercase()}"
+            }
             return
         }
         IndexWorker.runNow(app, embedAnyway)

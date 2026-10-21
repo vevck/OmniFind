@@ -40,9 +40,10 @@ class Indexer(private val store: IndexStore) {
     fun crawl(roots: List<File>, kinds: Set<FileKind>): List<Pair<File, FileKind>> {
         val out = mutableListOf<Pair<File, FileKind>>()
         for (root in roots.filter { it.isDirectory }) {
+            // Never into system, hidden or linked folders, never out of the chosen one, only regular files (FolderPolicy).
             root.walkTopDown()
-                .onEnter { it == root || !Rules.skipsFolder(it) }
-                .filter { it.isFile }
+                .onEnter { FolderPolicy.mayEnter(it, root) }
+                .filter { FolderPolicy.mayRead(it) }
                 .forEach { file -> Rules.classify(file)?.takeIf { it in kinds }?.let { out += file to it } }
         }
         return out.distinctBy { it.first.path }
