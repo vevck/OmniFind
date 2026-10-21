@@ -12,7 +12,8 @@ and app/build/screens/ (the screenshots the tests captured) it writes:
 - docs/Release-Notes.md: this build's notes, then every earlier build's (tools/release/history.json)
 - app/src/main/assets/help/release_notes.json: the in-app Release Notes, this version then the earlier ones
 - app/src/main/assets/help/figures/<name>.webp: the User Guide's screenshots, cropped from device captures
-- the walk-through and build line in docs/Product-Specification.md and docs/Solution-Design.md (between markers)
+- the walk-through and build line in docs/Product-Specification.md and docs/Solution-Design.md (between markers),
+  when they're here: both are kept locally and never committed
 
 Everything a reader sees about a release comes from one file, so the app and the documents can't disagree.
 Needs Pillow (with WebP).
@@ -187,6 +188,9 @@ def help_figures():
 
 def fill(path, release, figures):
     """Replaces the build line and the walk-through between their markers in a hand-written document."""
+    if not path.exists():   # kept locally, not in git: a fresh checkout doesn't have it
+        print(f"skipped {path.relative_to(ROOT)} (not here)")
+        return
     text = path.read_text()
     build = (f"<!-- build:begin -->**{release['product']} {release['version']} · Build {release['build']}** · "
              f"{release['date']} · {release['minAndroid']} to {release['targetAndroid']}<!-- build:end -->")

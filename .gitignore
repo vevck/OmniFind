@@ -22,6 +22,10 @@ docs/OmniFind-Android-Guide.md
 # Developer notes: kept locally, not published
 docs/DEVELOPMENT.md
 
+# Product specification and solution design: kept locally, not published
+docs/Product-Specification.md
+docs/Solution-Design.md
+
 # Kotlin compiler's local caches and logs
 .kotlin/
 
