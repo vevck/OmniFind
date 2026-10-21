@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- The launcher icon (Android 8+, so every version OmniFind runs on): any density, any mask shape the launcher uses,
+     and a themed (monochrome) version on Android 13+. The PNGs in mipmap-<density> are for tools that want bitmaps. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/launcher_background" />
     <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
 </adaptive-icon>

@@ -1,5 +1,6 @@
 package com.omnifind.app.index
 
+import android.annotation.SuppressLint
 import android.util.Half
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -331,6 +332,8 @@ class IndexStore(file: File) : AutoCloseable {
             return (if (Volumes.onCard(folder)) listOf("sdcard") + folders else folders).joinToString(" ")
         }
 
+        /** 768 floats as float16 bits, little-endian: what the native scorer reads (vectors.cpp). */
+        @SuppressLint("HalfFloat")   // writing the half-float bits is the point: they're never used as a number here
         fun half(vector: FloatArray): ByteArray {
             val buffer = ByteBuffer.allocate(vector.size * 2).order(ByteOrder.LITTLE_ENDIAN)
             for (value in vector) buffer.putShort(Half.toHalf(value))

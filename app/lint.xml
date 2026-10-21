@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- The PNG launcher icons are only for tools that want bitmaps: on Android 8+ (all OmniFind supports) the
+         adaptive icon in mipmap-anydpi is used and the launcher masks it. -->
+    <issue id="IconLauncherShape" severity="ignore" />
+    <!-- OmniFind ships for arm64 phones (its native code is tuned for them); ChromeOS x86 isn't a target. -->
+    <issue id="ChromeOsAbiSupport" severity="ignore" />
+</lint>

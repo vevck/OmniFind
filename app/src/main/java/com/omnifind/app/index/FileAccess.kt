@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 /**
@@ -24,8 +25,11 @@ object FileAccess {
             PackageManager.PERMISSION_GRANTED
 
     /** The Settings page where Android 11+ grants "All files access" to OmniFind. */
+    @RequiresApi(Build.VERSION_CODES.R)
     fun settingsIntent(context: Context): Intent =
         Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:${context.packageName}"))
-            .takeIf { it.resolveActivity(context.packageManager) != null }
-            ?: Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+
+    /** The list of all apps' file access, for the few phones whose Settings lack OmniFind's own page. */
+    @RequiresApi(Build.VERSION_CODES.R)
+    fun fallbackIntent(): Intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
 }

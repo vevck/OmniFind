@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 import java.util.Properties
 
 plugins {
@@ -6,16 +7,25 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+/**
+ * The release manifest: the one place the version and build number are set (see app/src/main/assets/release). Read
+ * through providers.fileContents so the configuration cache notices when it changes (a plain file read isn't tracked,
+ * and a changed build number would otherwise be ignored).
+ */
+val release = JsonSlurper().parseText(
+    providers.fileContents(layout.projectDirectory.file("src/main/assets/release/release.json")).asText.get(),
+) as Map<*, *>
+
 android {
     namespace = "com.omnifind.app"
     compileSdk = 37
 
     defaultConfig {
         applicationId = "com.omnifind.app"
-        minSdk = 28                       // Android 9: the Mi A1
-        targetSdk = 37
-        versionCode = 3
-        versionName = "0.3.0-beta.1"
+        minSdk = 28                       // Android 9 (the Mi A1) …
+        targetSdk = 37                    // … to Android 17, the latest (the Pixel 8 Pro on CP3A.261005.005)
+        versionCode = (release["build"] as Number).toInt()   // from release.json
+        versionName = release["version"] as String
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
