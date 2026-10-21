@@ -1,0 +1,77 @@
+{
+  "versions": [
+    {
+      "version": "0.3.0-beta.4",
+      "build": 7,
+      "date": "21 Oct 2026",
+      "summary": "Menu, User Guide and Release Notes in the app",
+      "new": [
+        "A menu on every screen (⋮): Settings, Dashboard and Help.",
+        "Help: a user guide of nine articles, from getting started to privacy, with screenshots of the app.",
+        "Release notes for every version, inside the app.",
+        "Search the guide and the release notes from the Help screen."
+      ],
+      "improved": [
+        "Articles remember where you were: going back returns you to the same place in the guide.",
+        "Article text can be made larger with Aa."
+      ],
+      "fixed": [
+        "The build number in the app always matches the release (it could lag a build behind)."
+      ]
+    },
+    {
+      "version": "0.3.0-beta.3",
+      "build": 6,
+      "date": "20 Oct 2026",
+      "summary": "Folder Refresh, protected system folders and the feature tour",
+      "new": [
+        "Refresh under Phone storage and SD card lists folders made since, marked New.",
+        "\"Take a tour of the features\" opens once after you install or update OmniFind."
+      ],
+      "improved": [
+        "System folders (Android, LOST.DIR, hidden folders) and other apps' files are never listed or read."
+      ],
+      "fixed": [
+        "A folder reached through a link, or a path back into Android/, is refused.",
+        "The caution before indexing says PDFs, not pdfs."
+      ]
+    },
+    {
+      "version": "0.3.0-beta.2",
+      "build": 4,
+      "date": "20 Oct 2026",
+      "summary": "Android 15 to 17, every screen density and large text",
+      "new": [
+        "Launcher icon in every density, with round and themed (Android 13+) versions."
+      ],
+      "improved": [
+        "Edge to edge on Android 15 to 17: nothing under the status or navigation bar.",
+        "Layouts hold from small ldpi screens to tablets, in landscape and at 200% text.",
+        "\"All files access\" on Android 11 and later; notification permission on 13 and later."
+      ],
+      "fixed": [
+        "The privacy note no longer covers the examples on short screens.",
+        "Buttons, tags and chips no longer cut words off at large text sizes.",
+        "Thumbnails are sharp on every density."
+      ]
+    },
+    {
+      "version": "0.3.0-beta.1",
+      "build": 3,
+      "date": "18 Oct 2026",
+      "summary": "First release",
+      "new": [
+        "Search documents (txt, md, html, docx, odt), PDFs, photos and screenshots by what's in them, in your own words and across languages, with exact words, numbers and names matched as written.",
+        "Choose the kinds of file and the folders to search, on the phone and on the SD card.",
+        "Files already indexed are skipped; nothing is read or embedded twice.",
+        "Indexing in the background while the phone charges, with progress and a Stop button.",
+        "PDFs open at the page that matched; pictures open in your gallery.",
+        "The model downloads inside the app, once, over Wi-Fi, checked before it's used.",
+        "Runs entirely on the phone's processor, from Android 9 on, tested on a 2017 Xiaomi Mi A1."
+      ],
+      "improved": [],
+      "fixed": [],
+      "thanks": "Thank you, Abdur Rahim. OmniFind exists because of DigUp, Abdur Rahim's open-source app that searches the files on your computer by what's in them with EmbeddingGemma 2. DigUp showed what this model can do for everyday files, and its open code made OmniFind possible: the way OmniFind runs the model, ranks meaning against exact words, and reads documents and pictures follows DigUp's, and its reference vectors are how we checked that a phone finds the same things a computer does."
+    }
+  ]
+}

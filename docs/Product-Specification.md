@@ -1,6 +1,6 @@
 # OmniFind: Product Specification (Business Requirements)
 
-<!-- build:begin -->**OmniFind 0.3.0-beta.3 · Build 6** · 2026-10-20 · Android 9 (API 28) to Android 17 (API 37)<!-- build:end -->
+<!-- build:begin -->**OmniFind 0.3.0-beta.4 · Build 7** · 2026-10-21 · Android 9 (API 28) to Android 17 (API 37)<!-- build:end -->
 
 ## 1. Purpose
 
@@ -58,9 +58,9 @@ x86 devices, other UI languages.
 ## 6. Walk-through of this release
 
 <!-- walkthrough:begin -->
-### Feature walk-through: OmniFind 0.3.0-beta.3, build 6
+### Feature walk-through: OmniFind 0.3.0-beta.4, build 7
 
-Shown in the app as **Take a tour of the features** after installing or updating to build 6 (and from Engine → What's new). Screenshots and highlights come from build validation: a run on a device with sample data where noted, otherwise `TourScreenshotTest` and `DeviceMatrixTest`.
+Shown in the app as **Take a tour of the features** after installing or updating to build 7 (and from Engine → What's new). Screenshots and highlights come from build validation: a run on a device with sample data where noted, otherwise `TourScreenshotTest` and `DeviceMatrixTest`.
 
 | Validation run | |
 |---|---|
@@ -80,7 +80,7 @@ Highlights from the validation run:
 
 Verified by: TC-01 (Engine matches DigUp's reference vectors), TC-02 (A question in one language finds a note in another), TC-03 (Words first, then meaning, on 30 notes)
 
-![Step 1: Search by what's in your files](release/0.3.0-beta.3/tour/1-search-results.png)
+![Step 1: Search by what's in your files](release/0.3.0-beta.4/tour/1-search-results.png)
 
 _Screenshot: Pixel 8 Pro emulator, Android 17, build 5, sample data._
 
@@ -96,7 +96,7 @@ Highlights from the validation run:
 
 Verified by: TC-04 (Photos and screenshots found among notes)
 
-![Step 2: Photos and screenshots by what they show](release/0.3.0-beta.3/tour/2-pictures.png)
+![Step 2: Photos and screenshots by what they show](release/0.3.0-beta.4/tour/2-pictures.png)
 
 _Screenshot: Pixel 8 Pro emulator, Android 17, build 5, sample data._
 
@@ -112,11 +112,11 @@ Highlights from the validation run:
 
 Verified by: TC-04 (Photos and screenshots found among notes), TC-05 (Indexed files are skipped; unticked types stay)
 
-![Step 3: Choose what to index](release/0.3.0-beta.3/tour/3-index-types.png)
+![Step 3: Choose what to index](release/0.3.0-beta.4/tour/3-index-types.png)
 
 _Screenshot: Pixel 8 Pro emulator, Android 17, build 5, sample data._
 
-**4. Refresh folders, system folders protected** · _New in this build_
+**4. Refresh folders, system folders protected** · _New in beta.3_
 
 Tap Refresh under Phone storage or SD card to list folders made since; new ones are marked New. Android's system folders and other apps' files are never shown or read.
 
@@ -128,7 +128,7 @@ Highlights from the validation run:
 
 Verified by: TC-06 (Folder policy: system, hidden and linked folders refused)
 
-![Step 4: Refresh folders, system folders protected](release/0.3.0-beta.3/tour/4-index-folders.png)
+![Step 4: Refresh folders, system folders protected](release/0.3.0-beta.4/tour/4-index-folders.png)
 
 _Screenshot: Pixel 8 Pro emulator, Android 17, build 5, sample data._
 
@@ -143,7 +143,7 @@ Highlights from the validation run:
 
 Verified by: TC-10 (Release APK: signature, Android 9–17, 16 KB pages, icons)
 
-![Step 5: Download the model in the app](release/0.3.0-beta.3/tour/5-engine-download.png)
+![Step 5: Download the model in the app](release/0.3.0-beta.4/tour/5-engine-download.png)
 
 _Screenshot: Rendered by TourScreenshotTest (the download wasn't run on the emulator)._
 
@@ -158,11 +158,11 @@ Highlights from the validation run:
 
 Verified by: TC-07 (Screens match the design mockups), TC-08 (Screens on ldpi to xxxhdpi, tablet, landscape, 130% and 200% text)
 
-![Step 6: Fits every screen](release/0.3.0-beta.3/tour/6-screens.png)
+![Step 6: Fits every screen](release/0.3.0-beta.4/tour/6-screens.png)
 
 _Screenshot: Rendered by DeviceMatrixTest._
 
-**7. This tour, after every update** · _New in this build_
+**7. This tour, after every update** · _New in beta.3_
 
 The tour opens once after you install or update OmniFind. Open it again any time from Engine → What's new.
 
@@ -173,7 +173,23 @@ Highlights from the validation run:
 
 Verified by: TC-09 (Tour shows after install or update, once per build)
 
-![Step 7: This tour, after every update](release/0.3.0-beta.3/tour/7-tour.png)
+![Step 7: This tour, after every update](release/0.3.0-beta.4/tour/7-tour.png)
+
+_Screenshot: Rendered by TourScreenshotTest._
+
+**8. Help, from the menu** · _New in this build_
+
+Tap ⋮ at the top of any screen for Help: a user guide with articles about every feature, and the release notes of every version. Search both from the top of Help.
+
+Highlights from the validation run:
+
+- Nine articles in three groups, starting with Getting started
+- Release notes from 0.3.0-beta.1 to this build
+- Back from an article returns to the same place in the guide
+
+Verified by: TC-11 (Menu, Help, articles and release notes; navigation keeps your place)
+
+![Step 8: Help, from the menu](release/0.3.0-beta.4/tour/8-help-guide.png)
 
 _Screenshot: Rendered by TourScreenshotTest._
 <!-- walkthrough:end -->

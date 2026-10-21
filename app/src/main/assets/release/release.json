@@ -1,12 +1,12 @@
 {
   "product": "OmniFind",
-  "version": "0.3.0-beta.3",
-  "build": 6,
-  "date": "2026-10-20",
+  "version": "0.3.0-beta.4",
+  "build": 7,
+  "date": "2026-10-21",
   "channel": "Beta",
   "minAndroid": "Android 9 (API 28)",
   "targetAndroid": "Android 17 (API 37)",
-  "summary": "Folders refresh on demand and system folders are protected; a tour shows what's new after every install or update, with screenshots and results from a real run on a Pixel 8 Pro emulator. Includes beta.2's fixes for Android 15–17, every screen density and large text.",
+  "summary": "A menu on every screen, with Help: a user guide of nine articles and the release notes of every version, searchable, inside the app.",
   "testCases": [
     {
       "id": "TC-01",
@@ -77,6 +77,13 @@
       "test": "tools/release/verify_apk.sh",
       "where": "build",
       "result": "Passed, build 6 (2026-10-20); beta.2 launched on a Pixel 8 Pro emulator, Android 17"
+    },
+    {
+      "id": "TC-11",
+      "name": "Menu, Help, articles and release notes; navigation keeps your place",
+      "test": "HelpTest, ScreenshotTest",
+      "where": "unit",
+      "result": "Passed, build 7 (2026-10-21); menu, Help, an article and its chips, Back to the guide, Release Notes and 0.3.0-beta.1 seen on the Pixel 8 Pro emulator, Android 17"
     }
   ],
   "tour": [
@@ -134,7 +141,7 @@
     {
       "number": 4,
       "title": "Refresh folders, system folders protected",
-      "status": "New in this build",
+      "status": "New in beta.3",
       "screenshot": "index-folders",
       "source": "Pixel 8 Pro emulator, Android 17, build 5, sample data",
       "tests": [
@@ -181,7 +188,7 @@
     {
       "number": 7,
       "title": "This tour, after every update",
-      "status": "New in this build",
+      "status": "New in beta.3",
       "screenshot": "tour",
       "source": "Rendered by TourScreenshotTest",
       "tests": [
@@ -191,6 +198,22 @@
       "highlights": [
         "Shown after an update (build 5 → 6 on the emulator); not again on relaunch",
         "Seven numbered steps, then the fixes and known issues"
+      ]
+    },
+    {
+      "number": 8,
+      "title": "Help, from the menu",
+      "status": "New in this build",
+      "screenshot": "help-guide",
+      "source": "Rendered by TourScreenshotTest",
+      "tests": [
+        "TC-11"
+      ],
+      "overview": "Tap ⋮ at the top of any screen for Help: a user guide with articles about every feature, and the release notes of every version. Search both from the top of Help.",
+      "highlights": [
+        "Nine articles in three groups, starting with Getting started",
+        "Release notes from 0.3.0-beta.1 to this build",
+        "Back from an article returns to the same place in the guide"
       ]
     }
   ],
@@ -226,6 +249,10 @@
     {
       "title": "The caution before indexing says PDFs, not pdfs",
       "build": "0.3.0-beta.3"
+    },
+    {
+      "title": "The build number in the app always matches the release",
+      "build": "0.3.0-beta.4"
     }
   ],
   "known": [
@@ -237,5 +264,21 @@
     "device": "Pixel 8 Pro emulator (1344 × 2992, 480 dpi), Android 17 (API 37), arm64",
     "data": "19 sample files from tools/demo/make_sample_data.py: 7 documents, 4 PDFs, 5 photos, 3 screenshots",
     "model": "Copied from the Mac with adb (not downloaded in the app)"
+  },
+  "oneLine": "Menu, User Guide and Release Notes in the app",
+  "notes": {
+    "new": [
+      "A menu on every screen (⋮): Settings, Dashboard and Help.",
+      "Help: a user guide of nine articles, from getting started to privacy, with screenshots of the app.",
+      "Release notes for every version, inside the app.",
+      "Search the guide and the release notes from the Help screen."
+    ],
+    "improved": [
+      "Articles remember where you were: going back returns you to the same place in the guide.",
+      "Article text can be made larger with Aa."
+    ],
+    "fixed": [
+      "The build number in the app always matches the release (it could lag a build behind)."
+    ]
   }
 }

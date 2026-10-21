@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,7 +47,12 @@ val MaxContentWidth = 600.dp
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun AppFrame(tab: Tab, onTab: (Tab) -> Unit, content: @Composable () -> Unit) {
+fun AppFrame(
+    tab: Tab, onTab: (Tab) -> Unit,
+    menuOpen: Boolean = false, onMenu: (Boolean) -> Unit = {}, onMenuItem: (MenuItem) -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+  Box(Modifier.fillMaxSize()) {
     Column(Modifier.fillMaxSize().background(OmniColors.Background)) {
         Column(
             Modifier.weight(1f).fillMaxWidth()
@@ -54,11 +61,21 @@ fun AppFrame(tab: Tab, onTab: (Tab) -> Unit, content: @Composable () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(Modifier.widthIn(max = MaxContentWidth).fillMaxWidth()
-                .padding(start = OmniSpace.Margin, end = OmniSpace.Margin, top = 15.dp)) { Wordmark() }
+                .padding(start = OmniSpace.Margin, end = OmniSpace.Margin, top = 15.dp)) {
+                Wordmark()
+                // ⋮ sits in the header's right margin, as in the design (its square ends 8 dp from the edge), centred
+                // on the wordmark without making the header any taller.
+                Box(Modifier.matchParentSize(), contentAlignment = Alignment.CenterEnd) {
+                    MenuButton(menuOpen, { onMenu(!menuOpen) },
+                        Modifier.wrapContentHeight(unbounded = true).offset(x = 12.dp))
+                }
+            }
             Box(Modifier.weight(1f).widthIn(max = MaxContentWidth).fillMaxWidth()) { content() }
         }
         if (!WindowInsets.isImeVisible) {
             BottomBar(Tab.entries.map { it.item }, tab.ordinal, { onTab(Tab.entries[it]) })
         }
     }
+    if (menuOpen) MenuFlyout(onPick = { onMenu(false); onMenuItem(it) }, onDismiss = { onMenu(false) })
+  }
 }

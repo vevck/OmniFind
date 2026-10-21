@@ -1,6 +1,11 @@
 package com.omnifind.app
 
 import android.app.Application
+import android.graphics.BitmapFactory
+import androidx.compose.ui.graphics.asImageBitmap
+import com.omnifind.app.help.Guide
+import com.omnifind.app.help.ReleaseNotes
+import com.omnifind.app.ui.help.HelpPages
 import androidx.compose.runtime.Composable
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.omnifind.app.index.FileKind
@@ -20,6 +25,7 @@ import com.omnifind.app.ui.Tab
 import com.omnifind.app.ui.VolumeUi
 import com.omnifind.app.ui.theme.OmniTheme
 import org.junit.Test
+import java.io.File
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -78,6 +84,21 @@ class DeviceMatrixTest {
                     volumes = volumes), NoIndexActions)
             }
             shot("$name-engine", Tab.ENGINE) { EngineContent(EngineUi(), NoEngineActions) }
+            captureRoboImage("build/screens/devices/$name-menu.png") {
+                OmniTheme { AppFrame(Tab.SEARCH, {}, menuOpen = true) { SearchContent(SearchUi(), {}, {}, {}) } }
+            }
+            help("$name-help", "help")
+            help("$name-article", "help", "article/indexing-your-files")
+            help("$name-notes", "help", "version/0.3.0-beta.1")
+        }
+    }
+
+    private val guide = Guide.parse(File("src/main/assets/help/guide.json").readText())
+    private val notes = ReleaseNotes.parse(File("src/main/assets/help/release_notes.json").readText())
+
+    private fun help(name: String, vararg stack: String) = captureRoboImage("build/screens/devices/$name.png") {
+        OmniTheme {
+            HelpPages(stack.toList(), {}, guide, notes, { BitmapFactory.decodeFile("src/main/assets/help/figures/$it.webp")?.asImageBitmap() })
         }
     }
 

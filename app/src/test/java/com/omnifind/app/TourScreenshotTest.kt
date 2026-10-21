@@ -1,6 +1,9 @@
 package com.omnifind.app
 
 import android.app.Application
+import com.omnifind.app.help.Guide
+import com.omnifind.app.help.ReleaseNotes
+import com.omnifind.app.ui.help.HelpPages
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -83,6 +86,13 @@ class TourScreenshotTest {
         shot("engine-download", Tab.ENGINE) {
             EngineContent(EngineUi(textModel = false, mediaModel = false, folder = "/storage/emulated/0/Android/data/com.omnifind.app/files/models",
                 download = "Downloading: 312 of 865 MB", downloadFraction = 312f / 865f), NoEngine)
+        }
+        // Help, from the menu: the User Guide.
+        captureRoboImage("$out/help-guide.png") {
+            OmniTheme {
+                HelpPages(listOf("help"), {}, Guide.parse(File("src/main/assets/help/guide.json").readText()),
+                    ReleaseNotes.parse(File("src/main/assets/help/release_notes.json").readText()), { null })
+            }
         }
         // The tour itself, showing its first step with the screenshot just captured.
         val release = Release.parse(File("src/main/assets/release/release.json").readText())

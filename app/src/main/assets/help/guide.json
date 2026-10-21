@@ -1,0 +1,126 @@
+{
+  "updated": "21 Oct 2026",
+  "start": "getting-started",
+  "sections": [
+    { "title": "Using OmniFind", "articles": ["searching-by-meaning", "filtering", "indexing-your-files", "charging-and-battery"] },
+    { "title": "Engine", "articles": ["how-the-model-works", "running-a-benchmark"] },
+    { "title": "Privacy", "articles": ["what-stays-on-your-phone", "protected-folders"] }
+  ],
+  "articles": [
+    {
+      "id": "getting-started", "section": "Start here", "title": "Getting started with OmniFind", "minutes": 3,
+      "blocks": [
+        { "type": "p", "text": "OmniFind finds the files on your phone by what's in them. Describe what you're looking for in your own words, and it finds the document, PDF page, photo or screenshot. Everything happens on this phone." },
+        { "type": "h", "text": "Get the model", "anchor": "Get the model" },
+        { "type": "p", "text": "Open **Engine** and tap **Download the model**. It's 865 MB, downloaded once over Wi-Fi, and checked before it's used. Until it's there, search still works by exact words." },
+        { "type": "h", "text": "Choose what to search", "anchor": "Choose" },
+        { "type": "p", "text": "Open **Index**, allow access to your files, then tick the kinds of file and the folders to search: on the phone, and on an SD card if you have one." },
+        { "type": "h", "text": "Index, then search", "anchor": "Search" },
+        { "type": "p", "text": "Tap **Index now**. Files are searchable by their words within minutes, and by meaning as they're embedded, best left on the charger overnight. Then search from the **Search** tab." },
+        { "type": "figure", "image": "search-results", "caption": "A search for “can I keep a cat in the flat” finds the lease, at page 3." }
+      ]
+    },
+    {
+      "id": "searching-by-meaning", "section": "Using OmniFind", "title": "Searching by meaning", "minutes": 3,
+      "blocks": [
+        { "type": "p", "text": "You don't need the file's name or its exact words. Describe what's in it, the way you'd ask a person." },
+        { "type": "h", "text": "Meaning and exact words", "anchor": "Meaning" },
+        { "type": "p", "text": "Each search runs twice at once: by meaning, and by the exact words you typed. Codes, names and numbers like **INV-2026-0417** are found exactly as written; meaning finds the rest, a moment later." },
+        { "type": "figure", "image": "search-results", "caption": "Results show where the match is: a PDF's page, with your words in bold." },
+        { "type": "h", "text": "Across languages", "anchor": "Languages" },
+        { "type": "p", "text": "The model understands more than 100 languages. Ask in English and find a note written in Bengali or Arabic, or the other way around." },
+        { "type": "figure", "image": "hilsa", "caption": "“hilsa fish recipe”, asked in English, finds a recipe written in Bengali." },
+        { "type": "h", "text": "Stronger and weaker matches", "anchor": "Matches" },
+        { "type": "p", "text": "The clearest matches come first. Ones that only partly fit are listed under **Weaker matches**, and when nothing fits, OmniFind says so rather than guessing." }
+      ]
+    },
+    {
+      "id": "filtering", "section": "Using OmniFind", "title": "Filtering documents and pictures", "minutes": 2,
+      "blocks": [
+        { "type": "p", "text": "Under the search box, choose **All**, **Documents** or **Pictures**." },
+        { "type": "h", "text": "Pictures", "anchor": "Pictures" },
+        { "type": "p", "text": "Photos and screenshots are searched by what they show, not by their names. With **Pictures** chosen, results appear as a grid; tap one to open it in your gallery." },
+        { "type": "figure", "image": "pictures", "caption": "“mountains by a lake” with the Pictures filter." },
+        { "type": "h", "text": "Screenshots", "anchor": "Screenshots" },
+        { "type": "p", "text": "Screenshots are found by what's on them: “screenshot of a payment error” finds the screen that said your card was declined. Saying **screenshot** or **photo** in a search gives that kind a nudge." },
+        { "type": "figure", "image": "payment", "caption": "The declined payment, found by describing it." }
+      ]
+    },
+    {
+      "id": "indexing-your-files", "section": "Using OmniFind", "title": "Indexing your files", "minutes": 4,
+      "blocks": [
+        { "type": "p", "text": "OmniFind reads your files once and remembers what's in them, so later searches are instant. Everything happens on this phone." },
+        { "type": "h", "text": "Choose file types", "anchor": "Choose file types" },
+        { "type": "p", "text": "Open the **Index** tab and tick the kinds of files you want to search." },
+        { "type": "figure", "image": "index-types", "caption": "The Index tab with documents, PDFs and pictures chosen." },
+        { "type": "h", "text": "Run an index", "anchor": "Run an index" },
+        { "type": "p", "text": "Tap **Index now**. New and changed files are read; files already indexed and unchanged are skipped, so nothing is read or embedded twice. **Last run** shows what happened, like “0 new or changed · 19 skipped · 21 embedded”." },
+        { "type": "p", "text": "If the types you chose are already in the index, OmniFind says so first, and you can carry on or cancel." },
+        { "type": "h", "text": "Folders", "anchor": "Folders" },
+        { "type": "p", "text": "Further down, tick the folders to search, or everything on the phone or the SD card. Made a folder since? Tap **Refresh** under its storage and it appears, marked **New**." },
+        { "type": "figure", "image": "index-folders", "caption": "Refresh found a new folder, Scans." },
+        { "type": "h", "text": "Battery", "anchor": "Battery" },
+        { "type": "p", "text": "Reading files is quick; working out their meaning takes longer, so it happens while the phone charges. See **Charging and battery use**." }
+      ]
+    },
+    {
+      "id": "charging-and-battery", "section": "Using OmniFind", "title": "Charging and battery use", "minutes": 2,
+      "blocks": [
+        { "type": "p", "text": "Understanding a file's meaning (embedding) is the heavy part of indexing. On an older phone it takes about 25 seconds for a page of text and 18 seconds for a photo." },
+        { "type": "h", "text": "While charging", "anchor": "Charging" },
+        { "type": "p", "text": "By default OmniFind embeds only while the phone charges, and pauses if it gets hot. Leave it on the charger overnight and a large collection is done by morning." },
+        { "type": "h", "text": "On battery", "anchor": "On battery" },
+        { "type": "p", "text": "In a hurry? Tap **Embed on battery** on the Index tab. A notification shows progress, with a **Stop** button; stopping loses nothing." },
+        { "type": "h", "text": "Turning it off", "anchor": "Off" },
+        { "type": "p", "text": "Switch off **Embed whenever the phone charges** under Background on the Index tab to only index when you ask." }
+      ]
+    },
+    {
+      "id": "how-the-model-works", "section": "Engine", "title": "How the on-device model works", "minutes": 3,
+      "blocks": [
+        { "type": "p", "text": "OmniFind runs Google DeepMind's **EmbeddingGemma 2** on your phone's processor, with no internet connection and no account." },
+        { "type": "h", "text": "Meaning as numbers", "anchor": "Meaning" },
+        { "type": "p", "text": "The model turns a piece of text, a picture or a search into 768 numbers that capture what it means. Things that mean the same land close together, whatever language or form they're in, so a photo of a beach lands near the words “a dog on the beach”." },
+        { "type": "h", "text": "The download", "anchor": "Download" },
+        { "type": "p", "text": "The model is 865 MB: 310 MB for text, and 555 MB for pictures and sound. It's downloaded once and checked against its published checksum." },
+        { "type": "h", "text": "Thanks to DigUp", "anchor": "DigUp" },
+        { "type": "p", "text": "OmniFind follows **DigUp**, Abdur Rahim's open-source app for computers: the way it runs the model, ranks meaning against exact words, and reads documents and pictures. A phone finds the same things a computer does." }
+      ]
+    },
+    {
+      "id": "running-a-benchmark", "section": "Engine", "title": "Running a benchmark", "minutes": 2,
+      "blocks": [
+        { "type": "p", "text": "Phones differ in how many processor cores help at once. The benchmark finds the fastest setting for yours." },
+        { "type": "h", "text": "Run it", "anchor": "Run it" },
+        { "type": "p", "text": "Open **Engine**, keep the phone plugged in and idle, and tap a number under **Benchmark · CPU threads**. OmniFind times 16 passages and a picture with that many threads and shows the results under **Log**." },
+        { "type": "h", "text": "Use the result", "anchor": "Use it" },
+        { "type": "p", "text": "Try 4 and 8. If 8 is faster, choose 8 under **Background** on the Index tab: indexing then uses it too." },
+        { "type": "h", "text": "Try a search", "anchor": "Try a search" },
+        { "type": "p", "text": "**Try a search** on the Engine tab ranks ten sample sentences against what you type: a quick check that the model works, before anything is indexed." }
+      ]
+    },
+    {
+      "id": "what-stays-on-your-phone", "section": "Privacy", "title": "What stays on your phone", "minutes": 2,
+      "blocks": [
+        { "type": "p", "text": "Everything. Your files, the index of what's in them and your searches never leave the phone." },
+        { "type": "h", "text": "The only connection", "anchor": "Connection" },
+        { "type": "p", "text": "OmniFind goes online only to download its model, once, from Hugging Face. That request asks for the model and sends nothing about you or your files. There's no account, no analytics and no ads." },
+        { "type": "h", "text": "Read only", "anchor": "Read only" },
+        { "type": "p", "text": "OmniFind only reads the folders you choose. It never changes, moves, deletes or uploads a file, and its index isn't included in backups." },
+        { "type": "h", "text": "Removing it", "anchor": "Removing" },
+        { "type": "p", "text": "Uninstalling OmniFind removes the model and the index with it." }
+      ]
+    },
+    {
+      "id": "protected-folders", "section": "Privacy", "title": "Folders OmniFind never reads", "minutes": 2,
+      "blocks": [
+        { "type": "p", "text": "Some folders belong to Android or to other apps. OmniFind never lists, chooses or reads them, even if you pick “Everything on the phone storage”." },
+        { "type": "h", "text": "What's protected", "anchor": "Protected" },
+        { "type": "p", "text": "**Android** (other apps' private data), **LOST.DIR**, trash folders, and any hidden folder whose name starts with a dot." },
+        { "type": "h", "text": "No back doors", "anchor": "Back doors" },
+        { "type": "p", "text": "A shortcut (link) is never followed, and a path that leads back into a protected folder is refused, so nothing can reach another app's files by a side route." },
+        { "type": "figure", "image": "index-folders", "caption": "The folder list: system folders don't appear in it." }
+      ]
+    }
+  ]
+}
