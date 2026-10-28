@@ -9,7 +9,13 @@ Search the files on your Android phone by what's in them, with Google DeepMind's
 <p align="center"><a href="../../releases/latest"><b>Download OmniFind.apk (beta)</b></a><br>
 <sub>Free. Everything runs on your phone.</sub></p>
 
-<p align="center"><img src="docs/images/screens.png" width="800" alt="OmniFind's Search, Index and Engine screens: a search box with example questions, the index of 57 pictures all searchable by meaning, and the model ready on the phone's processor."></p>
+## Watch the video
+
+[![OmniFind Demo video](https://img.youtube.com/vi/tGwEmRlV9BM/maxresdefault.jpg)](https://www.youtube.com/watch?v=tGwEmRlV9BM)
+
+<!-- <p align="center"><img src="docs/images/screens.png" width="800" alt="OmniFind's Search, Index and Engine screens: a search box with example questions, the index of 57 pictures all searchable by meaning, and the model ready on the phone's processor."></p> -->
+
+
 
 EmbeddingGemma 2 is the multimodal embedding model Google DeepMind released in October 2026. It puts text and images
 into one shared space: a photo of a dog on a beach lands next to the words "a dog on the beach", and a screenshot of a
