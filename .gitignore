@@ -26,6 +26,9 @@ docs/DEVELOPMENT.md
 docs/Product-Specification.md
 docs/Solution-Design.md
 
+# Demo video, its script, music and captions: kept locally, not published
+docs/demo/
+
 # Kotlin compiler's local caches and logs
 .kotlin/
 
